@@ -45,7 +45,7 @@ def main():
 
     # DO NOT REMOVE the 'Recommender System' option below, however,
     # you are welcome to add more options to enrich your app.
-    page_options = ["Recommender System","Solution Overview"]
+    page_options = ["Recommender System","Solution Overview", "User Page"]
 
     # -------------------------------------------------------------------
     # ----------- !! THIS CODE MUST NOT BE ALTERED !! -------------------
@@ -106,7 +106,13 @@ def main():
 
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
-
+    if page_selection == "Trending":
+        # Creating a text box for user input
+        movie_name = st.text_area("Enter Text", "Type Here")
+        if st.button("Search"):
+            movies = title_list[title_list['title'].str.contains(movie_name, case=False, regex=False)]
+            movie_titles = movies['title']
+            st.success(movie_titles)
 
 if __name__ == '__main__':
     main()
