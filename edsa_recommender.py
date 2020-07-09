@@ -111,8 +111,8 @@ def main():
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
     if page_selection == "Trending":
-        st.info("Popular Movies")
-        st.image('resources/imgs/best.png',use_column_width=True)
+        st.subheader("Popular Movies")
+        #st.image('resources/imgs/best.png',use_column_width=True)
         st.image('resources/imgs/five_star.jpg',use_column_width=True)
         ratings_train.pop('timestamp')
         train_data, test_data = train_test_split(ratings_train, test_size = 0.25)
