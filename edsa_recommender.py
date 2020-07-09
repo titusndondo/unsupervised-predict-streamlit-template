@@ -40,8 +40,8 @@ from recommenders.content_based import content_model
 from sklearn.model_selection import train_test_split
 
 # Data Loading
-#title_list = load_movie_titles('resources/data/movies.csv')
-title_list = pd.read_csv('resources/data/movies.csv')
+title_list = load_movie_titles('resources/data/movies.csv')
+titles = pd.read_csv('resources/data/movies.csv')
 ratings_train = pd.read_csv('resources/data/ratings.csv')
 
 # App declaration
@@ -114,7 +114,7 @@ def main():
         # Creating a text box for user input
         movie_name = st.text_area("Enter Text", "Type Here")
         if st.button("Search"):
-            movies = title_list[title_list['title'].str.contains(movie_name, case=False, regex=False)]
+            movies = titles[titles['title'].str.contains(movie_name, case=False, regex=False)]
             movie_titles = list(movies['title'])
             st.success(movie_titles)
         ratings_train.pop('timestamp')
