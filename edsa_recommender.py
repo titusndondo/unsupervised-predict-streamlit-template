@@ -31,21 +31,25 @@ import streamlit as st
 # Data handling dependencies
 import pandas as pd
 import numpy as np
+import turicreate
 
 # Custom Libraries
 from utils.data_loader import load_movie_titles
 from recommenders.collaborative_based import collab_model
 from recommenders.content_based import content_model
+from sklearn.model_selection import train_test_split
 
 # Data Loading
-title_list = load_movie_titles('resources/data/movies.csv')
+#title_list = load_movie_titles('resources/data/movies.csv')
+title_list = pd.read_csv('resources/data/movies.csv')
+ratings_train = pd.read_csv('resources/data/ratings.csv')
 
 # App declaration
 def main():
 
     # DO NOT REMOVE the 'Recommender System' option below, however,
     # you are welcome to add more options to enrich your app.
-    page_options = ["Recommender System","Solution Overview"]
+    page_options = ["Recommender System","Solution Overview", "Trending"]
 
     # -------------------------------------------------------------------
     # ----------- !! THIS CODE MUST NOT BE ALTERED !! -------------------
@@ -106,7 +110,21 @@ def main():
 
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
-
+    if page_selection == "Trending":
+        # Creating a text box for user input
+        movie_name = st.text_area("Enter Text", "Type Here")
+        if st.button("Search"):
+            movies = title_list[title_list['title'].str.contains(movie_name, case=False, regex=False)]
+            movie_titles = list(movies['title'])
+            st.success(movie_titles)
+        ratings_train.pop('timestamp')
+        train_data, test_data = train_test_split(ratings_train, test_size = 0.25)
+        train_data = turicreate.load_sframe(train_data)
+        test_data = turicreate.load_sframe(test_data)
+        popularity_model = turicreate.popularity_recommender.create(train_data, user_id='userId', item_id='movieId', target='rating')
+        popular = popularity_model.recommend(users = [133, 3567], k = 5)
+        st.info("Popular Movies")
+        st.write(popular)
 
 if __name__ == '__main__':
     main()
