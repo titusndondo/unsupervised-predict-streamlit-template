@@ -112,7 +112,7 @@ def main():
         movie_name = st.text_area("Enter Text", "Type Here")
         if st.button("Search"):
             movies = title_list[title_list['title'].str.contains(movie_name, case=False, regex=False)]
-            movie_titles = movies['title']
+            movie_titles = list(movies['title'])
             st.success(movie_titles)
 
 if __name__ == '__main__':
