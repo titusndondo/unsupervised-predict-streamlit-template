@@ -123,7 +123,10 @@ def main():
         df = popular.to_dataframe()
         data = pd.merge(df, titles, how='inner', on='movieId')
         films = data['title'].unique()
-        st.write(films)        
+        st.write(films)
+        st.subheader('New Release')
+        video = {'avengers':'https://www.youtube.com/watch?v=rYC7Dpe-4mU'}
+        st.video(video['avengers']                 
         # Creating a text box for user input
         movie_name = st.text_area("Enter Text", "Type Here")
         if st.button("Search"):
