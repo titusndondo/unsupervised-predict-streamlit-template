@@ -111,6 +111,12 @@ def main():
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
     if page_selection == "Trending":
+        movie_name = st.text_area("Enter Text", "Type Here")
+        if st.button("Search"):
+            movies = titles[titles['title'].str.contains(movie_name, case=False, regex=False)]
+            movie_titles = list(movies['title'])
+            st.success(movie_titles)
+        
         st.subheader("Popular Movies")
         #st.image('resources/imgs/best.png',use_column_width=True)
         st.image('resources/imgs/five_star.jpg',use_column_width=True)
@@ -126,13 +132,8 @@ def main():
         st.write(films)
         st.subheader('New Release')
         video = {'avengers':'https://www.youtube.com/watch?v=rYC7Dpe-4mU'}
-        st.video(video['avengers']                 
-        # Creating a text box for user input
-        movie_name = st.text_area("Enter Text", "Type Here")
-        if st.button("Search"):
-            movies = titles[titles['title'].str.contains(movie_name, case=False, regex=False)]
-            movie_titles = list(movies['title'])
-            st.success(movie_titles)
+        st.video(video['avengers']
+                 
 
 if __name__ == '__main__':
     main()
