@@ -111,7 +111,7 @@ def main():
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
     if page_selection == "Trending":
-        movie_name = st.text_area("Enter Text", "Type Here")
+        movie_name = st.text_area("Enter Movie Title", "Type Here")
         if st.button("Search"):
             movies = titles[titles['title'].str.contains(movie_name, case=False, regex=False)]
             movie_titles = list(movies['title'])
