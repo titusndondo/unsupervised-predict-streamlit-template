@@ -114,8 +114,10 @@ def main():
         movie_name = st.text_area("Enter Movie Title", "Type Here")
         if st.button("Search"):
             movies = titles[titles['title'].str.contains(movie_name, case=False, regex=False)]
-            movie_titles = list(movies['title'])
-            st.success(movie_titles)
+            movie_titles = movies['title']
+            for i,j in enumerate(movie_titles):
+                st.subheader(str(i+1)+'. '+j)
+            #st.success(movie_titles)
         
         st.subheader("Popular Movies")
         #st.image('resources/imgs/best.png',use_column_width=True)
