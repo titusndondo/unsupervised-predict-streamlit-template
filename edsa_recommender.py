@@ -132,8 +132,8 @@ def main():
         st.write(films)
         st.subheader('New Release')
         video = {'avengers':'https://www.youtube.com/watch?v=rYC7Dpe-4mU'}
-        st.video(video['avengers']
-                 
+        st.video(video['avengers'])
+
 
 if __name__ == '__main__':
     main()
