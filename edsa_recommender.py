@@ -131,7 +131,9 @@ def main():
         df = popular.to_dataframe()
         data = pd.merge(df, titles, how='inner', on='movieId')
         films = data['title'].unique()
-        st.write(films)
+        for i,j in enumerate(films):
+            st.subheader(str(i+1)+'. '+j)
+        #st.write(films)
         st.subheader('New Release')
         video = {'avengers':'https://www.youtube.com/watch?v=rYC7Dpe-4mU'}
         st.video(video['avengers'])
