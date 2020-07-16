@@ -38,6 +38,7 @@ from utils.data_loader import load_movie_titles
 from recommenders.collaborative_based import collab_model
 from recommenders.content_based import content_model
 from sklearn.model_selection import train_test_split
+from surprise import Dataset, Reader, SVD
 
 # Data Loading
 title_list = load_movie_titles('resources/data/movies.csv')
@@ -49,7 +50,7 @@ def main():
 
     # DO NOT REMOVE the 'Recommender System' option below, however,
     # you are welcome to add more options to enrich your app.
-    page_options = ["Recommender System","Solution Overview", "Trending"]
+    page_options = ["Recommender System","About", "Trending", "Recommender"]
 
     # -------------------------------------------------------------------
     # ----------- !! THIS CODE MUST NOT BE ALTERED !! -------------------
@@ -104,7 +105,7 @@ def main():
     # -------------------------------------------------------------------
 
     # ------------- SAFE FOR ALTERING/EXTENSION -------------------
-    if page_selection == "Solution Overview":
+    if page_selection == "About":
         st.title("Solution Overview")
         st.write("Describe your winning approach on this page")
 
@@ -138,6 +139,22 @@ def main():
         video = {'avengers':'https://www.youtube.com/watch?v=rYC7Dpe-4mU'}
         st.video(video['avengers'])
 
-
+    if page_selection == "Recommender":
+        userId = st.text_area("Enter User ID", "Type Here")
+        if st.button("Sign In"):
+            reader = Reader(rating_scale=(1, 5))
+            data = Dataset.load_from_df(ratings_train[['userId','movieId', 'rating']], reader)
+            #from surprise.model_selection import train_test_split
+            #trainset, testset = train_test_split(dataset, test_size=.25)
+            model = SVD()
+            svd_rec = model.fit(data)
+            person_of_int = ratings_train[ratings_train['userId']==userId]
+            person = person_of_int.drop('timestamp', axis=1)
+            recommended = svd_rec.test(person)
+            st.title("We think you'll like:")
+            for i,j in enumerate(recommended):
+                st.subheader(str(i+1)+'. '+j)            
+            
+            
 if __name__ == '__main__':
     main()
