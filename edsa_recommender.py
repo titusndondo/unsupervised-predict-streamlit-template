@@ -150,7 +150,7 @@ def main():
             svd_rec = model.fit(trainset)
             person_of_int = ratings_train[ratings_train['userId']==userId]
             person = person_of_int.drop('timestamp', axis=1)
-            recommended = svd_rec.test(person)
+            recommended = svd_rec.predict(person)
             st.title("We think you'll like:")
             for i,j in enumerate(recommended):
                 st.subheader(str(i+1)+'. '+j)            
