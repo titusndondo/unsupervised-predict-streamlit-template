@@ -124,7 +124,7 @@ def main():
         #st.image('resources/imgs/best.png',use_column_width=True)
         st.image('resources/imgs/five_star.jpg',use_column_width=True)
         ratings_train.pop('timestamp')
-        train_data, test_data = train_test_split(ratings_train, test_size = 0.25)
+        #train_data, test_data = train_test_split(ratings_train, test_size = 0.25)
         train_data = turicreate.load_sframe(train_data)
         test_data = turicreate.load_sframe(test_data)
         popularity_model = turicreate.popularity_recommender.create(train_data, user_id='userId', item_id='movieId', target='rating')
