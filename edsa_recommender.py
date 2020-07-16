@@ -38,6 +38,7 @@ from utils.data_loader import load_movie_titles
 from recommenders.collaborative_based import collab_model
 from recommenders.content_based import content_model
 from sklearn.model_selection import train_test_split
+from surprise import Dataset, Reader, SVD
 
 # Data Loading
 title_list = load_movie_titles('resources/data/movies.csv')
@@ -49,7 +50,7 @@ def main():
 
     # DO NOT REMOVE the 'Recommender System' option below, however,
     # you are welcome to add more options to enrich your app.
-    page_options = ["Recommender System","Solution Overview", "Trending"]
+    page_options = ["Recommender System","About", "Trending", "Recommender"]
 
     # -------------------------------------------------------------------
     # ----------- !! THIS CODE MUST NOT BE ALTERED !! -------------------
@@ -104,7 +105,7 @@ def main():
     # -------------------------------------------------------------------
 
     # ------------- SAFE FOR ALTERING/EXTENSION -------------------
-    if page_selection == "Solution Overview":
+    if page_selection == "About":
         st.title("Solution Overview")
         st.write("Describe your winning approach on this page")
 
@@ -123,10 +124,11 @@ def main():
         #st.image('resources/imgs/best.png',use_column_width=True)
         st.image('resources/imgs/five_star.jpg',use_column_width=True)
         ratings_train.pop('timestamp')
+        from sklearn.model_selection import train_test_split
         train_data, test_data = train_test_split(ratings_train, test_size = 0.25)
-        train_data = turicreate.load_sframe(train_data)
-        test_data = turicreate.load_sframe(test_data)
-        popularity_model = turicreate.popularity_recommender.create(train_data, user_id='userId', item_id='movieId', target='rating')
+        train_df = turicreate.load_sframe(train_data)
+        test_df = turicreate.load_sframe(test_data)
+        popularity_model = turicreate.popularity_recommender.create(train_df, user_id='userId', item_id='movieId', target='rating')
         popular = popularity_model.recommend(users = [133, 3567], k = 5)
         df = popular.to_dataframe()
         data = pd.merge(df, titles, how='inner', on='movieId')
@@ -138,6 +140,30 @@ def main():
         video = {'avengers':'https://www.youtube.com/watch?v=rYC7Dpe-4mU'}
         st.video(video['avengers'])
 
-
+    if page_selection == "Recommender":
+        st.image('resources/imgs/movie.jpg',use_column_width=True)
+        userId = st.text_area("Enter User ID", "Type Here")
+        if st.button("Sign In"):
+            reader = Reader(rating_scale=(1, 5))
+            data = Dataset.load_from_df(ratings_train[['userId','movieId', 'rating']], reader)
+            from surprise.model_selection import train_test_split
+            trainset, testset = train_test_split(data, test_size=.25)
+            model = SVD()
+            svd_rec = model.fit(trainset)
+            person_of_int = ratings_train[ratings_train['userId']==userId]
+            person = person_of_int.drop('timestamp', axis=1)
+            recommended = svd_rec.predict(person)
+            st.title("We think you'll like:")
+            for i,j in enumerate(recommended):
+                st.subheader(str(i+1)+'. '+j)
+                
+        if st.button("Register"):
+            #st.write('### Enter Your Three Favorite Movies')
+            movie_1 = st.selectbox('Fisrt Option',title_list[14930:15200])
+            movie_2 = st.selectbox('Second Option',title_list[25055:25255])
+            movie_3 = st.selectbox('Third Option',title_list[21100:21200])
+            fav_movies = [movie_1,movie_2,movie_3]             
+            
+            
 if __name__ == '__main__':
     main()
