@@ -141,6 +141,7 @@ def main():
         st.video(video['avengers'])
 
     if page_selection == "Recommender":
+        st.image('resources/imgs/movie.jpg',use_column_width=True)
         userId = st.text_area("Enter User ID", "Type Here")
         if st.button("Sign In"):
             reader = Reader(rating_scale=(1, 5))
