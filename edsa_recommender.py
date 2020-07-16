@@ -145,7 +145,7 @@ def main():
             reader = Reader(rating_scale=(1, 5))
             data = Dataset.load_from_df(ratings_train[['userId','movieId', 'rating']], reader)
             from surprise.model_selection import train_test_split
-            trainset, testset = train_test_split(dataset, test_size=.25)
+            trainset, testset = train_test_split(data, test_size=.25)
             model = SVD()
             svd_rec = model.fit(trainset)
             person_of_int = ratings_train[ratings_train['userId']==userId]
