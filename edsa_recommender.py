@@ -147,12 +147,13 @@ def main():
             reader = Reader(rating_scale=(1, 5))
             data = Dataset.load_from_df(ratings_train[['userId','movieId', 'rating']], reader)
             from surprise.model_selection import train_test_split
-            trainset, testset = train_test_split(data, test_size=.25)
+            trainset, testdata = train_test_split(data, test_size=.25)
             model = SVD()
             svd_rec = model.fit(trainset)
             person_of_int = ratings_train[ratings_train['userId']==userId]
             person = person_of_int.drop('timestamp', axis=1)
-            recommended = svd_rec.predict(person)
+            _,testset = train_test_split(person, test_size=1.0)
+            recommended = svd_rec.test(testset)
             st.title("We think you'll like:")
             for i,j in enumerate(recommended):
                 st.subheader(str(i+1)+'. '+j)
