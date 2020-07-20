@@ -152,7 +152,8 @@ def main():
             svd_rec = model.fit(trainset)
             person_of_int = ratings_train[ratings_train['userId']==userId]
             person = person_of_int.drop('timestamp', axis=1)
-            _,testset = train_test_split(person, test_size=1.0)
+            data_df = Dataset.load_from_df(person[['userId','movieId', 'rating']], reader)
+            _,testset = train_test_split(data_df, test_size=1.0)
             recommended = svd_rec.test(testset)
             st.title("We think you'll like:")
             for i,j in enumerate(recommended):
