@@ -32,18 +32,6 @@ import os
 import pandas as pd
 import numpy as np
 
-# Importing data
-# This is a dataset with all the movies and their similaries
-# Takes long to preprocess. The user will query the csv file to interact with
-# the app. The files has 4 columns:
-# 1. 'title' - of the movie being queried
-# 2. 'recommendations' - the recommended movies for the movie being queried
-# 3. 'similarity' - the similarity coefficient based on cosine similarity
-# 4. 'rank' - the ranking of the recommended movies
-# Note that each movie has 10 recommended movies in the file
-
-similarities_data = pd.read_csv('predict_deliverables/data/similarities_data.csv')
-
 # !! DO NOT CHANGE THIS FUNCTION SIGNATURE !!
 # You are, however, encouraged to change its content.
 def content_model(movie_list,top_n=10):
@@ -63,6 +51,18 @@ def content_model(movie_list,top_n=10):
         Titles of the top-n movie recommendations to the user.
 
     """
+    # Importing data
+    # This is a dataset with all the movies and their similaries
+    # Takes long to preprocess. The user will query the csv file to interact with
+    # the app. The files has 4 columns:
+    # 1. 'title' - of the movie being queried
+    # 2. 'recommendations' - the recommended movies for the movie being queried
+    # 3. 'similarity' - the similarity coefficient based on cosine similarity
+    # 4. 'rank' - the ranking of the recommended movies
+    # Note that each movie has 10 recommended movies in the file
+
+    path = 'predict_deliverables/data/similarities_data.csv'
+    similarities_data = pd.read_csv(path)
 
     # initialising list of recommended movies
     recommended_movies = list()
