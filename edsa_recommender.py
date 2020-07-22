@@ -36,7 +36,7 @@ import turicreate
 # Custom Libraries
 from utils.data_loader import load_movie_titles
 from recommenders.collaborative_based import collab_model
-from recommenders.content_based import content_model
+from recommenders.tags_based_content_recommender import content_model
 from sklearn.model_selection import train_test_split
 from surprise import Dataset, Reader, SVD
 
@@ -150,6 +150,7 @@ def main():
             trainset, testdata = train_test_split(data, test_size=.25)
             model = SVD()
             svd_rec = model.fit(trainset)
+            #userId = userId.astype(int)
             person_of_int = ratings_train[ratings_train['userId']==userId]
             person = person_of_int.drop('timestamp', axis=1)
             data_df = Dataset.load_from_df(person[['userId','movieId', 'rating']], reader)
