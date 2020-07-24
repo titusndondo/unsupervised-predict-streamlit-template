@@ -148,7 +148,7 @@ def main():
         if st.button("Sign In"):
             def collab(userId,top_n=10):
                 dataset = ratings_train.pivot(index = 'userId', columns ='movieId', values = 'rating').fillna(0)
-                train = ratings_df
+                train = ratings_train
                 metric = 'cosine'
                 user_id = userId
     
