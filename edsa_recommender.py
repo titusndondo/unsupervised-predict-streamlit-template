@@ -150,7 +150,7 @@ def main():
                 dataset = ratings_train.pivot(index = 'userId', columns ='movieId', values = 'rating').fillna(0)
                 train = ratings_train
                 metric = 'cosine'
-                user_id = userId.astype(int)
+                user_id = int(userId)
     
                 similarities=[]
                 indices=[]
