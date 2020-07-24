@@ -39,6 +39,8 @@ from recommenders.collaborative_model import collab_model
 from recommenders.tags_based_content_recommender import content_model
 from sklearn.model_selection import train_test_split
 from surprise import Dataset, Reader, SVD
+from sklearn.neighbors import NearestNeighbors
+from scipy.spatial.distance import correlation, cosine
 
 # Data Loading
 title_list = load_movie_titles('resources/data/movies.csv')
@@ -145,6 +147,8 @@ def main():
         userId = st.text_area("Enter User ID", "Type Here")
         if st.button("Sign In"):
             def collab(userId,top_n=10):
+                dataset = ratings_train.pivot(index = 'userId', columns ='movieId', values = 'rating').fillna(0)
+                train = ratings_df
                 metric = 'cosine'
                 user_id = userId
     
@@ -167,7 +171,7 @@ def main():
                 Movies_under_consideration = list(map(int, Movie_seen_by_similar_users))
                 df = pd.DataFrame({'movieId':Movies_under_consideration})
                 top_10_recommendation = df[0:top_n]
-                Movie_Name = top_10_recommendation.merge(movies_df, how='inner', on='movieId')
+                Movie_Name = top_10_recommendation.merge(titles, how='inner', on='movieId')
                 recommended_movies = Movie_Name.title.values.tolist()
                
                 return recommended_movies   
