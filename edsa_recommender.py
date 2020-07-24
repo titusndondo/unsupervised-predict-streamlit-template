@@ -175,10 +175,10 @@ def main():
                 recommended_movies = Movie_Name.title.values.tolist()
                
                 return recommended_movies   
-                recommended_movie = collab(userId, top_n=10)
-                st.title("We think you'll like:")
-                for i,j in enumerate(recommended_movies):
-                    st.subheader(str(i+1)+'. '+j)
+            recommended_movie = collab(userId, top_n=10)
+            st.title("We think you'll like:")
+            for i,j in enumerate(recommended_movies):
+                st.subheader(str(i+1)+'. '+j)
         if st.button("Register"):
             #st.write('### Enter Your Three Favorite Movies')
             movie_1 = st.selectbox('Fisrt Option',title_list[14930:15200])
