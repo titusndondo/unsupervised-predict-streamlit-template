@@ -66,7 +66,7 @@ def collab_model(movie_list,top_n=10):
     Movie_user = train.groupby(by = 'userId')['movieId'].apply(lambda x:','.join(x))
     b = indices.squeeze().tolist()
     d = Movie_user[Movie_user.index.isin(b)]
-     l = ','.join(d.values)
+    l = ','.join(d.values)
     Movie_seen_by_similar_users = l.split(',')
     Movies_under_consideration = list(map(int, Movie_seen_by_similar_users))
     df = pd.DataFrame({'movieId':Movies_under_consideration})
