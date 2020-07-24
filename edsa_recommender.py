@@ -35,7 +35,7 @@ import turicreate
 
 # Custom Libraries
 from utils.data_loader import load_movie_titles
-from recommenders.collaborative_based import collab_model
+from recommenders.collaborative_model import collab_model
 from recommenders.tags_based_content_recommender import content_model
 from sklearn.model_selection import train_test_split
 from surprise import Dataset, Reader, SVD
