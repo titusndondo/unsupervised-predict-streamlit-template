@@ -90,16 +90,16 @@ def main():
 
         if sys == 'Collaborative Based Filtering':
             if st.button("Recommend"):
-                #try:
-                    #with st.spinner('Crunching the numbers...'):
-                top_recommendations = collab_model(movie_list=fav_movies,
+                try:
+                    with st.spinner('Crunching the numbers...'):
+                        top_recommendations = collab_model(movie_list=fav_movies,
                                                            top_n=10)
-                st.title("We think you'll like:")
-                for i,j in enumerate(top_recommendations):
-                    st.subheader(str(i+1)+'. '+j)
-                #except:
-                    #st.error("Oops! Looks like this algorithm does't work.\
-                              #We'll need to fix it!")
+                        st.title("We think you'll like:")
+                        for i,j in enumerate(top_recommendations):
+                            st.subheader(str(i+1)+'. '+j)
+                except:
+                    st.error("Oops! Looks like this algorithm does't work.\
+                              We'll need to fix it!")
 
 
     # -------------------------------------------------------------------
@@ -144,28 +144,54 @@ def main():
         st.image('resources/imgs/movie.jpg',use_column_width=True)
         userId = st.text_area("Enter User ID", "Type Here")
         if st.button("Sign In"):
-            reader = Reader(rating_scale=(1, 5))
-            data = Dataset.load_from_df(ratings_train[['userId','movieId', 'rating']], reader)
-            from surprise.model_selection import train_test_split
-            trainset, testdata = train_test_split(data, test_size=.25)
-            model = SVD()
-            svd_rec = model.fit(trainset)
-            #userId = userId.astype(int)
-            person_of_int = ratings_train[ratings_train['userId']==userId]
-            person = person_of_int.drop('timestamp', axis=1)
-            data_df = Dataset.load_from_df(person[['userId','movieId', 'rating']], reader)
-            _,testset = train_test_split(data_df, test_size=1.0)
-            recommended = svd_rec.test(testset)
-            st.title("We think you'll like:")
-            for i,j in enumerate(recommended):
-                st.subheader(str(i+1)+'. '+j)
-                
+            def collab(userId,top_n=10):
+                metric = 'cosine'
+                user_id = userId
+    
+                similarities=[]
+                indices=[]
+                model_knn = NearestNeighbors(metric = metric, algorithm = 'brute') 
+                model_knn.fit(dataset)
+
+                distances, indices = model_knn.kneighbors(dataset.iloc[user_id-1, :].values.reshape(1, -1), n_neighbors = 20)
+                similarities = 1-distances.flatten()
+                for i in range(0, len(indices.flatten())):
+                    if indices.flatten()[i]+1 == user_id:
+                    continue;
+                train = train.astype({"movieId": str})
+                Movie_user = train.groupby(by = 'userId')['movieId'].apply(lambda x:','.join(x))
+                b = indices.squeeze().tolist()
+                d = Movie_user[Movie_user.index.isin(b)]
+                l = ','.join(d.values)
+                Movie_seen_by_similar_users = l.split(',')
+                Movies_under_consideration = list(map(int, Movie_seen_by_similar_users))
+                df = pd.DataFrame({'movieId':Movies_under_consideration})
+                top_10_recommendation = df[0:top_n]
+                Movie_Name = top_10_recommendation.merge(movies_df, how='inner', on='movieId')
+                recommended_movies = Movie_Name.title.values.tolist()
+               
+                return recommended_movies   
+                recommended_movie = collab(userId, top_n=10)
+                st.title("We think you'll like:")
+                for i,j in enumerate(recommended_movies):
+                    st.subheader(str(i+1)+'. '+j)
         if st.button("Register"):
             #st.write('### Enter Your Three Favorite Movies')
             movie_1 = st.selectbox('Fisrt Option',title_list[14930:15200])
             movie_2 = st.selectbox('Second Option',title_list[25055:25255])
             movie_3 = st.selectbox('Third Option',title_list[21100:21200])
-            fav_movies = [movie_1,movie_2,movie_3]             
+            fav_movies = [movie_1,movie_2,movie_3]
+            if st.button("Recommend"):
+                try:
+                    with st.spinner('Crunching the numbers...'):
+                        top_recommendations = collab_model(movie_list=fav_movies,
+                                                           top_n=10)
+                        st.title("We think you'll like:")
+                        for i,j in enumerate(top_recommendations):
+                            st.subheader(str(i+1)+'. '+j)
+                except:
+                    st.error("Oops! Looks like this algorithm does't work.\
+                              We'll need to fix it!")
             
             
 if __name__ == '__main__':
