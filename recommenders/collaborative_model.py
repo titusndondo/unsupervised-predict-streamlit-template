@@ -45,10 +45,10 @@ def collab_model(movie_list,top_n=10):
     for i in movie_ids:
         ds = train[train['movieId']==i]
         empty = pd.concat([empty, ds])
-    best_rating = empty[empty['rating']>=4]
+    best_rating = empty[empty['rating']>=3]
     count_ratings = best_rating.groupby('userId').count()
     sorted_df = count_ratings.sort_values('movieId', ascending=False)
-    user_id = sorted_df.index[1]
+    user_id = sorted_df.index[0]
     
     metric = 'cosine'
     
