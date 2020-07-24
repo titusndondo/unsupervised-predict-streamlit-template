@@ -157,7 +157,7 @@ def main():
                 model_knn = NearestNeighbors(metric = metric, algorithm = 'brute') 
                 model_knn.fit(dataset)
 
-                distances, indices = model_knn.kneighbors(dataset.iloc[user_id-1, :].values.reshape(1, -1), n_neighbors = 20)
+                distances, indices = model_knn.kneighbors(dataset.iloc[user_id, :].values.reshape(1, -1), n_neighbors = 20)
                 similarities = 1-distances.flatten()
                 for i in range(0, len(indices.flatten())):
                     if indices.flatten()[i]+1 == user_id:
