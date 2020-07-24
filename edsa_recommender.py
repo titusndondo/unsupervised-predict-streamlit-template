@@ -161,7 +161,7 @@ def main():
                 similarities = 1-distances.flatten()
                 for i in range(0, len(indices.flatten())):
                     if indices.flatten()[i]+1 == user_id:
-                    continue;
+                        continue;
                 train = train.astype({"movieId": str})
                 Movie_user = train.groupby(by = 'userId')['movieId'].apply(lambda x:','.join(x))
                 b = indices.squeeze().tolist()
