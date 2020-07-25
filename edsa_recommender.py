@@ -188,7 +188,7 @@ def main():
             movie_2 = st.selectbox('Second Option',title_list[25055:25255])
             movie_3 = st.selectbox('Third Option',title_list[21100:21200])
             fav_movies = [movie_1,movie_2,movie_3]
-            if st.button("Recommend"):
+            #if st.button("Recommend"):
 
             
 if __name__ == '__main__':
