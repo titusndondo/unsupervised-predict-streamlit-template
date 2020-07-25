@@ -182,9 +182,9 @@ def main():
 
         if st.button("Register"):
             st.subheader("Enter your three favorite movies")
-            movie1 = st.text_area("Enter Movie Title", "Type Here")
-            movie2 = st.text_area("Enter Movie Title", "Type Here")
-            movie3 = st.text_area("Enter Movie Title", "Type Here")
+            movie1 = st.text_area("Enter First Preference", "Type Here")
+            movie2 = st.text_area("Enter Second Preference", "Type Here")
+            movie3 = st.text_area("Enter Third Preference", "Type Here")
             favorites = [movie1, movie2, movie3]
             if st.button("Recommend"):
                 try:
