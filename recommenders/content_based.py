@@ -58,7 +58,7 @@ def content_model(movie_list,top_n=10):
         Titles of the top-n movie recommendations to the user.
 
     """
-    path = 'predict_deliverables/data/similarities_data.csv'
+    path = 'predict_deliverables/data/contend_similarities_data.csv'
     similarities_data = pd.read_csv(path)
 
     # initialising list of recommended movies
