@@ -43,6 +43,8 @@ from scipy.spatial.distance import correlation, cosine
 movies_df = pd.read_csv('resources/data/movies.csv',sep = ',',delimiter=',')
 ratings_df = pd.read_csv('resources/data/ratings.csv')
 ratings_df.drop(['timestamp'], axis=1,inplace=True)
+dataset = ratings_df.pivot(index = 'userId', columns ='movieId', values = 'rating').fillna(0)
+
 
 # We make use of an SVD model trained on a subset of the MovieLens 10k dataset.
 #model=pickle.load(open('resources/models/SVD.pkl', 'rb'))
