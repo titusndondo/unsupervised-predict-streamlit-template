@@ -110,7 +110,7 @@ def main():
     if page_selection == "About":
         st.title("About")
         st.image("https://3.bp.blogspot.com/-7Spg1mVpPm8/WRMKj5pUN0I/AAAAAAACklU/Ct1vOhZ7gtk06OXtdbCfGElR0jmExy1oQCLcB/s1600/movie_recommend.gif", use_column_width=True)
-        #st.video(image["play"])
+        st.markdown("The application has two sites, Trending and Recommender. Trending site firstly gives the user an option to search for any movie using it's title. The search engine will return all movies with the related title. Secondly, it recommends movies which are popular or highly rated by most viewers. Thirdly, it recommends the latest release, the user can view the trailor of the new release.")  
 
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
