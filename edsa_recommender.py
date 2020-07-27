@@ -190,7 +190,7 @@ def main():
             movie3 = st.text_area("Enter Third Preference", "Type Here")
             favorites = [movie1, movie2, movie3]
             if st.button('Recommend'):
-                top_recommendations = content_model(movie_list=fav_movies,
+                top_recommendations = content_model(movie_list=favorites,
                                                             top_n=10)
                 st.title("We think you'll like:")
                 for i,j in enumerate(top_recommendations):
