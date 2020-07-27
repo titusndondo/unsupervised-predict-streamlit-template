@@ -111,6 +111,9 @@ def main():
         st.title("About")
         st.image("https://3.bp.blogspot.com/-7Spg1mVpPm8/WRMKj5pUN0I/AAAAAAACklU/Ct1vOhZ7gtk06OXtdbCfGElR0jmExy1oQCLcB/s1600/movie_recommend.gif", use_column_width=True)
         st.markdown("The application has two sites, Trending and Recommender. Trending site firstly gives the user an option to search for any movie using it's title. The search engine will return all movies with the related title. Secondly, it recommends movies which are popular or highly rated by most viewers. Thirdly, it recommends the latest release, the user can view the trailor of the new release.")  
+        st.markdown("The recommender site, uses a collaborative filtering system to recommend movies to the user. Existing users have the option to login using their user Id, and their site history is used to recommend movies. New users can register by simply adding their three favorite movies to the system and their data is stored and used to recommend movies to the user.")
+        st.markdown("Collaborative filtering is a technique that can filter out items that a user might like on the basis of reactions by similar users. It works by searching a large group of people and finding a smaller set of users with tastes similar to a particular user. It looks at the items they like and combines them to create a ranked list of suggestions.")
+        st.image('resources/imgs/about.png',use_column_width=True)
 
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
