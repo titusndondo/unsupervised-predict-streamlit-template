@@ -144,49 +144,52 @@ def main():
 
     if page_selection == "Recommender":
         st.image('resources/imgs/movie.jpg',use_column_width=True)
-        userId = st.text_area("Enter User ID", "Type Here")
-        if st.button("Sign In"):
-            def collab(userId,top_n=10):
-                dataset = ratings_train.pivot(index = 'userId', columns ='movieId', values = 'rating').fillna(0)
-                train = ratings_train
-                metric = 'cosine'
-                user_id = int(userId)
+        sys = st.radio("New user Register Profile",
+                       ('Sign In',
+                        'Register'))
+        if sys == 'Sign In':
+            userId = st.text_area("Enter User ID", "Type Here")
+            if st.button('Recommend'):
+                def collab(userId,top_n=10):
+                    dataset = ratings_train.pivot(index = 'userId', columns ='movieId', values = 'rating').fillna(0)
+                    train = ratings_train
+                    metric = 'cosine'
+                    user_id = int(userId)
     
-                similarities=[]
-                indices=[]
-                model_knn = NearestNeighbors(metric = metric, algorithm = 'brute') 
-                model_knn.fit(dataset)
+                    similarities=[]
+                    indices=[]
+                    model_knn = NearestNeighbors(metric = metric, algorithm = 'brute') 
+                    model_knn.fit(dataset)
 
-                distances, indices = model_knn.kneighbors(dataset.iloc[user_id, :].values.reshape(1, -1), n_neighbors = 20)
-                similarities = 1-distances.flatten()
-                for i in range(0, len(indices.flatten())):
-                    if indices.flatten()[i]+1 == user_id:
-                        continue;
-                train = train.astype({"movieId": str})
-                Movie_user = train.groupby(by = 'userId')['movieId'].apply(lambda x:','.join(x))
-                b = indices.squeeze().tolist()
-                d = Movie_user[Movie_user.index.isin(b)]
-                l = ','.join(d.values)
-                Movie_seen_by_similar_users = l.split(',')
-                Movies_under_consideration = list(map(int, Movie_seen_by_similar_users))
-                df = pd.DataFrame({'movieId':Movies_under_consideration})
-                top_10_recommendation = df[0:top_n]
-                Movie_Name = top_10_recommendation.merge(titles, how='inner', on='movieId')
-                recommended_movies = Movie_Name.title.values.tolist()
+                    distances, indices = model_knn.kneighbors(dataset.iloc[user_id, :].values.reshape(1, -1), n_neighbors = 20)
+                    similarities = 1-distances.flatten()
+                    for i in range(0, len(indices.flatten())):
+                        if indices.flatten()[i]+1 == user_id:
+                            continue;
+                    train = train.astype({"movieId": str})
+                    Movie_user = train.groupby(by = 'userId')['movieId'].apply(lambda x:','.join(x))
+                    b = indices.squeeze().tolist()
+                    d = Movie_user[Movie_user.index.isin(b)]
+                    l = ','.join(d.values)
+                    Movie_seen_by_similar_users = l.split(',')
+                    Movies_under_consideration = list(map(int, Movie_seen_by_similar_users))
+                    df = pd.DataFrame({'movieId':Movies_under_consideration})
+                    top_10_recommendation = df[0:top_n]
+                    Movie_Name = top_10_recommendation.merge(titles, how='inner', on='movieId')
+                    recommended_movies = Movie_Name.title.values.tolist()
                
-                return recommended_movies   
-            recommended_movie = collab(userId, top_n=10)
-            st.title("We think you'll like:")
-            for i,j in enumerate(recommended_movie):
-                st.subheader(str(i+1)+'. '+j)
-
-        if st.button("Register"):
+                    return recommended_movies   
+                recommended_movie = collab(userId, top_n=10)
+                st.title("We think you'll like:")
+                for i,j in enumerate(recommended_movie):
+                    st.subheader(str(i+1)+'. '+j)
+        if sys == 'Register':
             st.subheader("Enter your three favorite movies")
             movie1 = st.text_area("Enter First Preference", "Type Here")
             movie2 = st.text_area("Enter Second Preference", "Type Here")
             movie3 = st.text_area("Enter Third Preference", "Type Here")
             favorites = [movie1, movie2, movie3]
-            if st.button("Recommend"):
+            if st.button('Recommend'):
                 try:
                     with st.spinner('Crunching the numbers...'):
                         top_recommendations = content_model(movie_list=fav_movies,
