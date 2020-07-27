@@ -108,8 +108,9 @@ def main():
 
     # ------------- SAFE FOR ALTERING/EXTENSION -------------------
     if page_selection == "About":
-        st.title("Solution Overview")
-        st.write("Describe your winning approach on this page")
+        st.title("About")
+        image = {play:"https://3.bp.blogspot.com/-7Spg1mVpPm8/WRMKj5pUN0I/AAAAAAACklU/Ct1vOhZ7gtk06OXtdbCfGElR0jmExy1oQCLcB/s1600/movie_recommend.gif"}
+        st.video(image[0])
 
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
@@ -184,6 +185,7 @@ def main():
                 for i,j in enumerate(recommended_movie):
                     st.subheader(str(i+1)+'. '+j)
         if sys == 'Register':
+            st.title("Discover your movie in a few clicks")
             st.subheader("Enter your three favorite movies")
             movie1 = st.text_area("Enter First Preference", "Type Here")
             movie2 = st.text_area("Enter Second Preference", "Type Here")
