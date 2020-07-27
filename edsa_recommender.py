@@ -190,17 +190,11 @@ def main():
             movie3 = st.text_area("Enter Third Preference", "Type Here")
             favorites = [movie1, movie2, movie3]
             if st.button('Recommend'):
-                try:
-                    with st.spinner('Crunching the numbers...'):
-                        top_recommendations = content_model(movie_list=fav_movies,
+                top_recommendations = content_model(movie_list=fav_movies,
                                                             top_n=10)
-                        st.title("We think you'll like:")
-                        for i,j in enumerate(top_recommendations):
-                            st.subheader(str(i+1)+'. '+j)
-                except:
-                    st.error("Oops! Looks like this algorithm does't work.\
-                              #We'll need to fix it!")
-            
+                st.title("We think you'll like:")
+                for i,j in enumerate(top_recommendations):
+                    st.subheader(str(i+1)+'. '+j)  
             
 if __name__ == '__main__':
     main()
