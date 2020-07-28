@@ -36,9 +36,11 @@ import turicreate
 # Custom Libraries
 from utils.data_loader import load_movie_titles
 from recommenders.collaborative_based import collab_model
-from recommenders.tags_based_content_recommender import content_model
+from recommenders.content_based import content_model
 from sklearn.model_selection import train_test_split
 from surprise import Dataset, Reader, SVD
+from sklearn.neighbors import NearestNeighbors
+from scipy.spatial.distance import correlation, cosine
 
 # Data Loading
 title_list = load_movie_titles('resources/data/movies.csv')
@@ -80,12 +82,12 @@ def main():
                     with st.spinner('Crunching the numbers...'):
                         top_recommendations = content_model(movie_list=fav_movies,
                                                             top_n=10)
-                    st.title("We think you'll like:")
-                    for i,j in enumerate(top_recommendations):
-                        st.subheader(str(i+1)+'. '+j)
+                        st.title("We think you'll like:")
+                        for i,j in enumerate(top_recommendations):
+                            st.subheader(str(i+1)+'. '+j)
                 except:
                     st.error("Oops! Looks like this algorithm does't work.\
-                              We'll need to fix it!")
+                              #We'll need to fix it!")
 
 
         if sys == 'Collaborative Based Filtering':
@@ -94,9 +96,9 @@ def main():
                     with st.spinner('Crunching the numbers...'):
                         top_recommendations = collab_model(movie_list=fav_movies,
                                                            top_n=10)
-                    st.title("We think you'll like:")
-                    for i,j in enumerate(top_recommendations):
-                        st.subheader(str(i+1)+'. '+j)
+                        st.title("We think you'll like:")
+                        for i,j in enumerate(top_recommendations):
+                            st.subheader(str(i+1)+'. '+j)
                 except:
                     st.error("Oops! Looks like this algorithm does't work.\
                               We'll need to fix it!")
@@ -106,8 +108,12 @@ def main():
 
     # ------------- SAFE FOR ALTERING/EXTENSION -------------------
     if page_selection == "About":
-        st.title("Solution Overview")
-        st.write("Describe your winning approach on this page")
+        st.title("About")
+        st.image("https://3.bp.blogspot.com/-7Spg1mVpPm8/WRMKj5pUN0I/AAAAAAACklU/Ct1vOhZ7gtk06OXtdbCfGElR0jmExy1oQCLcB/s1600/movie_recommend.gif", use_column_width=True)
+        st.markdown("The application has two sites, Trending and Recommender. Trending site firstly gives the user an option to search for any movie using it's title. The search engine will return all movies with the related title. Secondly, it recommends movies which are popular or highly rated by most viewers. Thirdly, it recommends the latest release, the user can view the trailor of the new release.")  
+        st.markdown("The recommender site, uses a collaborative filtering system to recommend movies to the user. Existing users have the option to login using their user Id, and their site history is used to recommend movies. New users can register by simply adding their three favorite movies to the system and their data is stored and used to recommend movies to the user.")
+        st.markdown("Collaborative filtering is a technique that can filter out items that a user might like on the basis of reactions by similar users. It works by searching a large group of people and finding a smaller set of users with tastes similar to a particular user. It looks at the items they like and combines them to create a ranked list of suggestions.")
+        st.image('resources/imgs/about.png',use_column_width=True)
 
     # You may want to add more sections here for aspects such as an EDA,
     # or to provide your business pitch.
@@ -142,31 +148,58 @@ def main():
 
     if page_selection == "Recommender":
         st.image('resources/imgs/movie.jpg',use_column_width=True)
-        userId = st.text_area("Enter User ID", "Type Here")
-        if st.button("Sign In"):
-            reader = Reader(rating_scale=(1, 5))
-            data = Dataset.load_from_df(ratings_train[['userId','movieId', 'rating']], reader)
-            from surprise.model_selection import train_test_split
-            trainset, testdata = train_test_split(data, test_size=.25)
-            model = SVD()
-            svd_rec = model.fit(trainset)
-            #userId = userId.astype(int)
-            person_of_int = ratings_train[ratings_train['userId']==userId]
-            person = person_of_int.drop('timestamp', axis=1)
-            data_df = Dataset.load_from_df(person[['userId','movieId', 'rating']], reader)
-            _,testset = train_test_split(data_df, test_size=1.0)
-            recommended = svd_rec.test(testset)
-            st.title("We think you'll like:")
-            for i,j in enumerate(recommended):
-                st.subheader(str(i+1)+'. '+j)
-                
-        if st.button("Register"):
-            #st.write('### Enter Your Three Favorite Movies')
-            movie_1 = st.selectbox('Fisrt Option',title_list[14930:15200])
-            movie_2 = st.selectbox('Second Option',title_list[25055:25255])
-            movie_3 = st.selectbox('Third Option',title_list[21100:21200])
-            fav_movies = [movie_1,movie_2,movie_3]             
-            
+        sys = st.radio("New user Register Profile",
+                       ('Sign In',
+                        'Register'))
+        if sys == 'Sign In':
+            userId = st.text_area("Enter User ID", "Type Here")
+            if st.button('Recommend'):
+                def collab(userId,top_n=10):
+                    dataset = ratings_train.pivot(index = 'userId', columns ='movieId', values = 'rating').fillna(0)
+                    train = ratings_train
+                    metric = 'cosine'
+                    user_id = int(userId)
+    
+                    similarities=[]
+                    indices=[]
+                    model_knn = NearestNeighbors(metric = metric, algorithm = 'brute') 
+                    model_knn.fit(dataset)
+
+                    distances, indices = model_knn.kneighbors(dataset.iloc[user_id, :].values.reshape(1, -1), n_neighbors = 20)
+                    similarities = 1-distances.flatten()
+                    for i in range(0, len(indices.flatten())):
+                        if indices.flatten()[i]+1 == user_id:
+                            continue;
+                    train = train.astype({"movieId": str})
+                    Movie_user = train.groupby(by = 'userId')['movieId'].apply(lambda x:','.join(x))
+                    b = indices.squeeze().tolist()
+                    d = Movie_user[Movie_user.index.isin(b)]
+                    l = ','.join(d.values)
+                    Movie_seen_by_similar_users = l.split(',')
+                    Movies_under_consideration = list(map(int, Movie_seen_by_similar_users))
+                    df = pd.DataFrame({'movieId':Movies_under_consideration})
+                    top_10_recommendation = df[0:top_n]
+                    Movie_Name = top_10_recommendation.merge(titles, how='inner', on='movieId')
+                    recommended_movies = Movie_Name.title.values.tolist()
+               
+                    return recommended_movies   
+                recommended_movie = collab(userId, top_n=10)
+                st.title("We think you'll like:")
+                for i,j in enumerate(recommended_movie):
+                    st.subheader(str(i+1)+'. '+j)
+        if sys == 'Register':
+            st.title("Discover your movie in a few clicks")
+            st.subheader("Enter your three favorite movies")
+            movie1 = st.text_area("Enter First Preference", "Type Here")
+            movie2 = st.text_area("Enter Second Preference", "Type Here")
+            movie3 = st.text_area("Enter Third Preference", "Type Here")
+            favorites = [movie1, movie2, movie3]
+            if st.button('Recommend'):
+                top_recommendations = content_model(movie_list=favorites,
+                                                            top_n=10)
+                st.title("We think you'll like:")
+                for i,j in enumerate(top_recommendations):
+                    st.subheader(str(i+1)+'. '+j)  
             
 if __name__ == '__main__':
     main()
