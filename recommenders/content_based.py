@@ -58,6 +58,8 @@ def content_model(movie_list,top_n=10):
         Titles of the top-n movie recommendations to the user.
 
     """
+    #The preprocessing file of the similarities_data can be found on this path "unsupervised-predict-streamlit-template/predict_deliverables/data/content_based_data_preprocessing.py"
+
     path = 'predict_deliverables/data/content_based_similarities.csv'
     similarities_data = pd.read_csv(path)
 
